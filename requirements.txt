@@ -1,0 +1,10 @@
+django
+gunicorn
+whitenoise
+dj-database-url
+# psycopg2-binary    # optional: only if you add Postgres later
+pypdf
+python-docx
+scikit-learn
+rapidfuzz
+numpy
