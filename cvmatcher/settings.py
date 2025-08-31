@@ -111,7 +111,7 @@ USE_TZ = True
 # ──────────────────────────────────────────────────────────────────────────────
 # Static files (WhiteNoise)
 # ──────────────────────────────────────────────────────────────────────────────
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Django 4.2+ recommended config for WhiteNoise
