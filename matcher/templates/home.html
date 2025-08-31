@@ -1,55 +1,64 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CV-Matcher</title>
-
-  <!-- Neon CSS + JS -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=200">
-  <script defer src="{% static 'js/app.js' %}?v=200"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=301">
 </head>
 <body>
   <div class="container">
-    <!-- Hero Section -->
-    <header class="hero">
+
+    <!-- Hero section -->
+    <section class="hero">
       <h1>Match your CV to any job in seconds.</h1>
       <p class="tagline">
-        Upload your CV, paste the job post, and get your match score with keyword fixes.<br>
-        <span class="muted">No account. No storage. 100% private.</span>
+        Upload your CV, paste the job description, and get a quick similarity score with keyword fixes.
       </p>
-    </header>
+    </section>
 
-    <!-- Main Card -->
+    <!-- Upload Card -->
     <div class="card">
-      <form method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data" class="row">
         {% csrf_token %}
-        <div class="row">
-          <div>
-            <label for="cv">Upload CV (.pdf / .docx)</label>
-            <input id="cv" name="cv" type="file" accept=".pdf,.docx,.txt" required />
-          </div>
-          <div>
-            <label for="jd">Job description</label>
-            <textarea id="jd" name="jd" placeholder="Paste the job description here..." required>{{ jd_text|default_if_none:"" }}</textarea>
-          </div>
-        </div>
-        <button class="btn" type="submit">Analyze now</button>
+
+        <label for="cv">Upload CV (.pdf / .docx / .txt)</label>
+        <input type="file" id="cv" name="cv" accept=".pdf,.docx,.txt" required>
+
+        <label for="jd">Job description</label>
+        <textarea id="jd" name="jd" placeholder="Paste the job description here..." required></textarea>
+
+        <button type="submit" class="btn">Analyze now</button>
       </form>
 
       {% if had_input %}
-        <div class="result">
-          <h2>Results</h2>
-          <p><strong>Similarity score:</strong> {{ score }} / 100</p>
-          <progress value="{{ score }}" max="100"></progress>
-          {% if cv_name %}<p class="muted">File: {{ cv_name }}</p>{% endif %}
-        </div>
+      <!-- Results -->
+      <div class="result">
+        <h2>Results</h2>
+        <p><strong>Similarity score:</strong> {{ score }} / 100</p>
+        <progress value="{{ score }}" max="100"></progress>
+
+        {% if missing_keywords %}
+          <p style="margin-top:10px"><strong>Missing keywords from job post:</strong></p>
+          <p>{{ missing_keywords|join:", " }}</p>
+        {% else %}
+          <p style="margin-top:10px"><strong>Nice!</strong> Your CV already mentions the key terms in this posting.</p>
+        {% endif %}
+
+        <h3 style="margin-top:16px">Improved CV (draft)</h3>
+        <textarea style="width:100%;min-height:220px">{{ improved_text }}</textarea>
+
+        <p style="margin-top:12px">
+          <a class="btn" href="{% url 'download_txt' %}">Download improved CV (.txt)</a>
+        </p>
+      </div>
       {% endif %}
     </div>
 
+    <!-- Footer -->
     <footer>
-      <p>💡 Tip: A higher score means more overlapping language between your CV and the job post.  
-      Try tailoring your CV to the keywords in the role.</p>
+      <p>No database. Files are processed in-memory only.</p>
     </footer>
   </div>
 </body>
